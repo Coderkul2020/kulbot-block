@@ -38,10 +38,10 @@
   var arg1 = Blockly.Arduino.valueToCode(block, 'COL', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 0;
   var arg2 = Blockly.Arduino.valueToCode(block, 'CEL', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 0;
   var arg3 = Blockly.Arduino.valueToCode(block, 'DATA', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 'Hello!!!';
-  if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_LCD_INIT(' + arg0 + ')') == -1)
-  Blockly.Arduino.setups_['setups_int'] += '  Rob.KULBOT_LCD_INIT(' + arg0 + ');\n'
   if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_SENSOR_INIT()') == -1)
   Blockly.Arduino.setups_['setups_int'] += '  Rob.KULBOT_SENSOR_INIT();\n'
+  if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_LCD_INIT(' + arg0 + ')') == -1)
+  Blockly.Arduino.setups_['setups_int'] += '  Rob.KULBOT_LCD_INIT(' + arg0 + ');\n'
   if (arg1 < 0) arg1 = 0;
   else if (arg1 > 16) arg1 = 16;
   if (arg2 < 0) arg2=0;
@@ -55,10 +55,10 @@ Blockly.Arduino['arduino_display_esp32lcdNumber'] = function(block) {
   var arg1 = Blockly.Arduino.valueToCode(block, 'COL', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 0;
   var arg2 = Blockly.Arduino.valueToCode(block, 'CEL', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 0;
   var arg3 = Blockly.Arduino.valueToCode(block, 'NUMBER', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 0;
-  if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_LCD_INIT(' + arg0 + ')') == -1)
-  Blockly.Arduino.setups_['setups_int'] += '  Rob.KULBOT_LCD_INIT(' + arg0 + ');\n'
   if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_SENSOR_INIT()') == -1)
   Blockly.Arduino.setups_['setups_int'] += '  Rob.KULBOT_SENSOR_INIT();\n';
+  if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_LCD_INIT(' + arg0 + ')') == -1)
+  Blockly.Arduino.setups_['setups_int'] += '  Rob.KULBOT_LCD_INIT(' + arg0 + ');\n'
   if (arg1 < 0) arg1 = 0;
   else if (arg1 > 16) arg1 = 16;
   if (arg2 < 0) arg2=0;
@@ -354,12 +354,13 @@ Blockly.Arduino['arduino_display_esp32lcdNumber'] = function(block) {
  Blockly.Arduino['arduino_motors_eps32SMotorM1'] = function(block) {
    var arg0 = block.getFieldValue('MO') || '1';
    var arg1 = block.getFieldValue('MoFB') || '0';
-   var arg2 = Blockly.Arduino.valueToCode(block, 'OUT', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 0;
+  var arg2 = Blockly.Arduino.valueToCode(block, 'OUT', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 0;
   //  Blockly.Arduino.includes_['include_suny'] = '#include <KULBOT.h>\nKULBOT Rob;\n';
   //  if (Blockly.Arduino.setups_['setups_int'] == undefined)
   //   Blockly.Arduino.setups_['setups_int'] = 'Rob.KULBOT_INIT();\n';
   //  else if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_INIT();\n') == -1)
   //  Blockly.Arduino.setups_['setups_int'] += 'Rob.KULBOT_INIT();\n';
+  if (arg2 > 100) arg2 = 100;
   if (Blockly.Arduino.setups_['setups_int'].indexOf('KULBOT_MOTORENCODER_INIT') == -1)
   Blockly.Arduino.setups_['setups_int'] += '  Rob.KULBOT_MOTORENCODER_INIT();\n';
    var code = 'Rob.KULBOT_MOTORENCODER_RUN1('+arg0+','+  arg2 + ',' + arg1 + '); \n';
@@ -617,41 +618,18 @@ Blockly.Arduino['arduino_bluetooth_bluetoothRead'] = function(block) {
    return [code, Blockly.Arduino.ORDER_ATOMIC];
  };
 
- Blockly.Arduino['arduino_variable_createvarchar'] = function(block) {
-  var arg0 = Blockly.Arduino.valueToCode(block, 'NAME', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 'c';
-  var arg1 = Blockly.Arduino.valueToCode(block, 'CHAR', Blockly.Arduino.ORDER_UNARY_POSTFIX) || '';
+ Blockly.Arduino['arduino_variable_createvar'] = function(block) {
+  var arg0 = block.getFieldValue('TYPE') || 'char';
+  var arg1 = Blockly.Arduino.valueToCode(block, 'NAME', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 'a';
   //  Blockly.Arduino.includes_['include_suny'] = '#include <KULBOT.h>\nKULBOT Rob;\n';
   //  if (Blockly.Arduino.setups_['setups_int'] == undefined)
   //   Blockly.Arduino.setups_['setups_int'] = 'Rob.KULBOT_INIT();\n';
   //  else if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_INIT();\n') == -1)
   //  Blockly.Arduino.setups_['setups_int'] += 'Rob.KULBOT_INIT();\n';
 
-  let code = '';
-  // kh nhap ki tu
-  if (arg1 === '""'){
-    let length0 = arg0.length;
-    arg0 = arg0.substr(1,length0-2);
-    arg1 = 'NULL'
-    code = 'char ' + arg0 + ' = ' + arg1 + ';\n'
-    return code;
-  }
-  // co nhap ki tu
-  else {
-    let length0 = arg0.length;
-    arg0 = arg0.substr(1,length0-2);
-    if (arg1 === '"NULL"') code = arg0 + ' = NULL;\n';
-    // nhap chuoi
-    else if (arg1.charAt(0) === '"' && arg1.charAt(arg1.length-1) === '"'){
-      arg1 = arg1.charAt(1);
-      code = 'char ' + arg0 + ' = \'' + arg1 + '\';\n';
-    }
-    else /*if (arg1 === 'NULL'){
-      code = arg0 + ' = ' + arg1 + ';\n';
-    }
-    else*/ code = 'char ' + arg0 + ' = ' + arg1 + ';\n';
-  }
-    //code = arg0 + ' = ' + arg1 + ';\n';
-  return code;
+  let length1 = arg1.length;
+  arg1 = arg1.slice(1,length1-1);
+  return arg0 + ' ' + arg1 + ';\n';
 
   // if (typeof arg0 === 'string' || arg0 instanceof String)
   // return 'string' + ' ' + arg0
@@ -660,44 +638,44 @@ Blockly.Arduino['arduino_bluetooth_bluetoothRead'] = function(block) {
   //return arg0.length;
  };
 
- Blockly.Arduino['arduino_variable_setvarchar'] = function(block) {
+ Blockly.Arduino['arduino_variable_setvar'] = function(block) {
   var arg0 = Blockly.Arduino.valueToCode(block, 'NAME', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 'c';
-  var arg1 = Blockly.Arduino.valueToCode(block, 'CHAR', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 'undefined';
-  //  Blockly.Arduino.includes_['include_suny'] = '#include <KULBOT.h>\nKULBOT Rob;\n';
-  //  if (Blockly.Arduino.setups_['setups_int'] == undefined)
-  //   Blockly.Arduino.setups_['setups_int'] = 'Rob.KULBOT_INIT();\n';
-  //  else if (Blockly.Arduino.setups_['setups_int'].indexOf('Rob.KULBOT_INIT();\n') == -1)
-  //  Blockly.Arduino.setups_['setups_int'] += 'Rob.KULBOT_INIT();\n';
-  let code = '';
-  // kh nhap ki tu
-  if (arg1 === '""'){
-    let length0 = arg0.length;
-    arg0 = arg0.substr(1,length0-2);
-    arg1 = 'NULL'
-    code = arg0 + ' = ' + arg1 + ';\n'
-    return code;
-  }
-  // co nhap ki tu
-  else {
-    let length0 = arg0.length;
-    arg0 = arg0.substr(1,length0-2);
-    if (arg1 === '"NULL"') code = arg0 + ' = NULL;\n';
-    // nhap chuoi
-    else if (arg1.charAt(0) === '"' && arg1.charAt(arg1.length-1) === '"'){
-      arg1 = arg1.charAt(1);
-      code = arg0 + ' = \'' + arg1 + '\';\n';
-    }
-    else /*if (arg1 === 'NULL'){
-      code = arg0 + ' = ' + arg1 + ';\n';
-    }
-    else*/ code = arg0 + ' = ' + arg1 + ';\n';
+  var arg1 = Blockly.Arduino.valueToCode(block, 'VALUE', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 'undefined';
+
+  let length0 = arg0.length;
+  let length1 = arg1.length;
+  arg0 = arg0.substr(1,length0-2);
+  arg1 = arg1.substr(1,length1-2);
+  console.log(arg1);
+  arg1.replace(/\\/g, '')
+  console.log(arg1);
+  return arg0 + ' = ' + arg1 + ';\n'
+
+  // // kh nhap ki tu
+  // if (arg1 === '""'){
+  //   let length0 = arg0.length;
+  //   arg0 = arg0.substr(1,length0-2);
+  //   arg1 = 'NULL'
+  //   code = arg0 + ' = ' + arg1 + ';\n'
+  //   return code;
+  // }
+  // // co nhap ki tu
+  // else {
+  //   let length0 = arg0.length;
+  //   arg0 = arg0.substr(1,length0-2);
+  //   if (arg1 === '"NULL"') code = arg0 + ' = NULL;\n';
+  //   // nhap chuoi
+  //   else if (arg1.includes('/[0-9]./')){
+      
+  //   }
+  //   else code = arg0 + ' = ' + arg1 + ';\n';
     
-    //code = arg0 + ' = ' + arg1 + ';\n';
-    return code;
-  }
+  //   //code = arg0 + ' = ' + arg1 + ';\n';
+  //   return code;
+  // }
  };
 
- Blockly.Arduino['arduino_variable_getvarchar'] = function(block) {
+ Blockly.Arduino['arduino_variable_getvar'] = function(block) {
   // var arg0 = Blockly.Arduino.valueToCode(block, 'DATA', Blockly.Arduino.ORDER_UNARY_POSTFIX) || '0';
   //  Blockly.Arduino.includes_['include_suny'] = '#include <KULBOT.h>\nKULBOT Rob;\n';
   //  if (Blockly.Arduino.setups_['setups_int'] == undefined)

@@ -64,23 +64,23 @@ Blockly.Arduino['operator_compare'] = function(block) {
   var arg1 = Blockly.Arduino.valueToCode(block, 'OPERAND2', order);
 
   // Arg is a empty string
-  if (arg0 === "\"\"") {
+  if (arg0 === "''") {
     arg0 = '0';
   }
-  if (arg1 === "\"\"") {
+  if (arg1 === "''") {
     arg1 = '0';
   }
 
-  arg0 = arg0.replace(/[\"]/g,"\'");
-  arg1 = arg1.replace(/[\"]/g,"\'");
+  arg0 = arg0.replace(/[\\"]/g,'');
+  arg1 = arg1.replace(/[\\"]/g,'');
 
   // Arg is a number
-  if (parseFloat(arg0.slice(1, -1)) == arg0.slice(1, -1)) {
-    arg0 = parseFloat(arg0.slice(1, -1)).toString();
-  }
-  if (parseFloat(arg1.slice(1, -1)) == arg1.slice(1, -1)) {
-    arg1 = parseFloat(arg1.slice(1, -1)).toString();
-  }
+  // if (parseFloat(arg0.slice(1, -1)) == arg0.slice(1, -1)) {
+  //   arg0 = parseFloat(arg0.slice(1, -1)).toString();
+  // }
+  // if (parseFloat(arg1.slice(1, -1)) == arg1.slice(1, -1)) {
+  //   arg1 = parseFloat(arg1.slice(1, -1)).toString();
+  // }
 
   var op = oplist[block.type];
   var code = arg0 + op + arg1;
